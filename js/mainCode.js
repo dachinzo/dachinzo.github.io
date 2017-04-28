@@ -8,7 +8,7 @@ var startYear,
 	rectWidth,
 	rectHeight,
 	rectCorner,
-	currentYear = 2015,
+	currentYear = 2017,
 	chosenYear = currentYear,
 	chosenYearOld = currentYear,
 	optArray, //for search box
@@ -66,7 +66,7 @@ if (handheld == false) {
 		.style("left", (width/2 + xOffset + padding + margin.left - sliderWidth/2)+"px")
 		.style("width", sliderWidth+"px")
 		.call(d3.slider().axis(d3.svg.axis().ticks(16).tickFormat(d3.format("d")))
-				.min(1999).max(currentYear).step(1).value(currentYear)
+				.min(2004).max(currentYear).step(1).value(currentYear)
 				.on("slide", function(evt, value) {
 					//reset search
 					inSearch = false;
@@ -205,7 +205,7 @@ d3.csv("data/"+fileName, function(error, data) {
 		  .attr("x", width/2)
 		  .attr("y", 35)
 		  .style("text-anchor", "middle")
-		  .text("Year of release");
+		  .text("YEAR OF DATA BREACH");
 
 	//Create y axis
 	svg.append("g")
@@ -217,7 +217,7 @@ d3.csv("data/"+fileName, function(error, data) {
 		  .attr("y", 8)
 		  .attr("dy", ".71em")
 		  .style("text-anchor", "end")
-		  .text("Number of songs")
+		  .text("Number of records lost")
 	
 	//Create the legend
 	createLegend();

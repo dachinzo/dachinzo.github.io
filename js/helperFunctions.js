@@ -81,7 +81,7 @@ function updateSearchbox(data) {
 		//Remove all the previous options
 		var select = document.getElementById("searchBox"); 
 		select.options.length = 0;
-		select.options[0] = new Option("Artist Name...", "", true, false)
+		select.options[0] = new Option("Type Organization Name ...", "", true, false)
 		
 		//Create options - all the artists in the current year
 		var options = data.map(function(d) { return d.artist; });
