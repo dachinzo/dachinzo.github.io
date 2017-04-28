@@ -205,7 +205,7 @@ d3.csv("data/"+fileName, function(error, data) {
 		  .attr("x", width/2)
 		  .attr("y", 35)
 		  .style("text-anchor", "middle")
-		  .text("YEAR OF DATA BREACH");
+		  .text("YEAR OF DATA BREACH REPORTED");
 
 	//Create y axis
 	svg.append("g")

@@ -28,7 +28,7 @@ function showTooltip(d) {
 	d3.select("#tooltip .tooltip-band").text(d.artist);
 	d3.select("#tooltip-year").html(d.release);
 	d3.select("#tooltip-title").html(d.title);
-	d3.select("#tooltip-place").html("Position in Top 2000: " + d.position);
+	d3.select("#tooltip-place").html("Data Sensetivity : " + d.position);
 }//showTooltip	
 
 function hideTooltip(d) {
