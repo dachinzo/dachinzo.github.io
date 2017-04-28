@@ -1,179 +1,75 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
-<style>
+	
+	<!-- Google fonts -->
+	<link href='https://fonts.googleapis.com/css?family=Oswald:400,300,700' rel='stylesheet' type='text/css'>
+	<link href='https://fonts.googleapis.com/css?family=Raleway:100,300' rel='stylesheet' type='text/css'>
+	<link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600' rel='stylesheet' type='text/css'>
 
-svg {
-  font: 10px sans-serif;
-}
+	<!-- D3 -->
+	<script src="https://d3js.org/d3.v3.min.js"></script>
+	<script src="js/crossfilter.min.js"></script>
+	
+	<!-- jQuery -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+	
+	<!-- Bootstrap -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
 
-.y.axis path {
-  display: none;
-}
+	<!-- Combobox script for the search box -->
+	<script src="js/bootstrap-combobox.js"></script>
+	<link href="css/bootstrap-combobox.css" rel="stylesheet">
 
-.y.axis line {
-  stroke: #fff;
-  stroke-opacity: .2;
-  shape-rendering: crispEdges;
-}
+	<link rel="stylesheet" href="css/tooltip.css"/>
+	<link rel="stylesheet" href="css/d3.slider.css"/> 
+	<link rel="stylesheet" href="css/style.css"/>
 
-.y.axis .zero line {
-  stroke: #000;
-  stroke-opacity: 1;
-}
-
-.title {
-  font: 300 78px Helvetica Neue;
-  fill: #666;
-}
-
-.birthyear,
-.age {
-  text-anchor: middle;
-}
-
-.birthyear {
-  fill: #fff;
-}
-
-rect {
-  fill-opacity: .6;
-  fill: #e377c2;
-}
-
-rect:first-child {
-  fill: #1f77b4;
-}
-
-</style>
+	<script src="js/showTooltip.js"></script>
+	<script src="js/createLegend.js"></script>
+	<script src="js/helperFunctions.js"></script>
+	<script src="js/d3.slider.js"></script>
+	
 <body>
-<script src="//d3js.org/d3.v3.min.js"></script>
-<script>
 
-var margin = {top: 20, right: 40, bottom: 30, left: 20},
-    width = 960 - margin.left - margin.right,
-    height = 500 - margin.top - margin.bottom,
-    barWidth = Math.floor(width / 19) - 1;
+	<div id="intro">
+		<h2>The Dutch Top 2000</h2>
+		<span>At the end of each year since 1999 hundreds of thousands of Dutch vote for the best songs ever made.</span><br>
+		<span>Here you can see the distribution of the top 2000 songs according to their year of release.</span><br>
+		<!--<span>Change the slider to see the top 2000 from other years, or hover over bars to see which song it is.</span>-->
+	</div>
+	
+	<!-- The search box -->
+	<div class="form-group" id="searchBoxWrapper">			
+		<select id="searchBox" class="combobox input-large form-control" style="display: none;" onchange="searchArtist(this.value)">
+			 <option value="" selected="selected">Artist Name...</option>
+		</select>
+	</div>
 
-var x = d3.scale.linear()
-    .range([barWidth / 2, width - barWidth / 2]);
+	<!-- slider -->
+	<div id="slider"></div>
+	
+	<!-- chart -->
+	<div id="chart"></div>
 
-var y = d3.scale.linear()
-    .range([height, 0]);
+	<div id="note">
+		<span>Created by Nadieh Bremer | <b><a href="http://www.visualcinnamon.com" target="_blank">VisualCinnamon.com</a></b> | <a href="http://nbremer.github.io/top2000/" target="_blank">Go to full version</a></span><br>
+		<span>Due to chart readability, 11 songs released before 1950 are not shown | Data from: <a href="http://www.radio2.nl/top2000" target="_blank">http://www.radio2.nl/top2000</a></span>
+	</div>
+	
+	<!-- Create div structure for Tooltip -->
+	<div id="tooltip">
+		<div id="tooltip-Container">
+			<div class="tooltip-band"></div>
+			<div class="tooltip-rule"></div>
+			<div id="tooltip-year"></div>
+			<div id="tooltip-title"></div>
+			<div id="tooltip-place"></div>
+			<div class="tooltip-tail"></div>
+		</div>
+	</div>
 
-var yAxis = d3.svg.axis()
-    .scale(y)
-    .orient("right")
-    .tickSize(-width)
-    .tickFormat(function(d) { return Math.round(d / 1e6) + "M"; });
+	<script src="js/mainCode.js"></script>
 
-// An SVG element with a bottom-right origin.
-var svg = d3.select("body").append("svg")
-    .attr("width", width + margin.left + margin.right)
-    .attr("height", height + margin.top + margin.bottom)
-  .append("g")
-    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-// A sliding container to hold the bars by birthyear.
-var birthyears = svg.append("g")
-    .attr("class", "birthyears");
-
-// A label for the current year.
-var title = svg.append("text")
-    .attr("class", "title")
-    .attr("dy", ".71em")
-    .text(2000);
-
-d3.csv("population.csv", function(error, data) {
-
-  // Convert strings to numbers.
-  data.forEach(function(d) {
-    d.people = +d.people;
-    d.year = +d.year;
-    d.age = +d.age;
-  });
-
-  // Compute the extent of the data set in age and years.
-  var age1 = d3.max(data, function(d) { return d.age; }),
-      year0 = d3.min(data, function(d) { return d.year; }),
-      year1 = d3.max(data, function(d) { return d.year; }),
-      year = year1;
-
-  // Update the scale domains.
-  x.domain([year1 - age1, year1]);
-  y.domain([0, d3.max(data, function(d) { return d.people; })]);
-
-  // Produce a map from year and birthyear to [male, female].
-  data = d3.nest()
-      .key(function(d) { return d.year; })
-      .key(function(d) { return d.year - d.age; })
-      .rollup(function(v) { return v.map(function(d) { return d.people; }); })
-      .map(data);
-
-  // Add an axis to show the population values.
-  svg.append("g")
-      .attr("class", "y axis")
-      .attr("transform", "translate(" + width + ",0)")
-      .call(yAxis)
-    .selectAll("g")
-    .filter(function(value) { return !value; })
-      .classed("zero", true);
-
-  // Add labeled rects for each birthyear (so that no enter or exit is required).
-  var birthyear = birthyears.selectAll(".birthyear")
-      .data(d3.range(year0 - age1, year1 + 1, 5))
-    .enter().append("g")
-      .attr("class", "birthyear")
-      .attr("transform", function(birthyear) { return "translate(" + x(birthyear) + ",0)"; });
-
-  birthyear.selectAll("rect")
-      .data(function(birthyear) { return data[year][birthyear] || [0, 0]; })
-    .enter().append("rect")
-      .attr("x", -barWidth / 2)
-      .attr("width", barWidth)
-      .attr("y", y)
-      .attr("height", function(value) { return height - y(value); });
-
-  // Add labels to show birthyear.
-  birthyear.append("text")
-      .attr("y", height - 4)
-      .text(function(birthyear) { return birthyear; });
-
-  // Add labels to show age (separate; not animated).
-  svg.selectAll(".age")
-      .data(d3.range(0, age1 + 1, 5))
-    .enter().append("text")
-      .attr("class", "age")
-      .attr("x", function(age) { return x(year - age); })
-      .attr("y", height + 4)
-      .attr("dy", ".71em")
-      .text(function(age) { return age; });
-
-  // Allow the arrow keys to change the displayed year.
-  window.focus();
-  d3.select(window).on("keydown", function() {
-    switch (d3.event.keyCode) {
-      case 37: year = Math.max(year0, year - 10); break;
-      case 39: year = Math.min(year1, year + 10); break;
-    }
-    update();
-  });
-
-  function update() {
-    if (!(year in data)) return;
-    title.text(year);
-
-    birthyears.transition()
-        .duration(750)
-        .attr("transform", "translate(" + (x(year1) - x(year)) + ",0)");
-
-    birthyear.selectAll("rect")
-        .data(function(birthyear) { return data[year][birthyear] || [0, 0]; })
-      .transition()
-        .duration(750)
-        .attr("y", y)
-        .attr("height", function(value) { return height - y(value); });
-  }
-});
-
-</script>
-
+</body>
+</html>
