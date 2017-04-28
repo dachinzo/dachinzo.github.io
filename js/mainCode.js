@@ -162,7 +162,7 @@ d3.csv("data/"+fileName, function(error, data) {
 		data[i].year = +data[i].year;
 		data[i].position = +data[i].position;
 		data[i].title = "" + data[i].title;
-		data[i].artist = "" + data[i].artist;
+		data[i].Entity = "" + data[i].Entity;
 	}//for i
 	//});
 
