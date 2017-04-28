@@ -163,6 +163,7 @@ d3.csv("data/"+fileName, function(error, data) {
 		data[i].position = +data[i].position;
 		data[i].title = "" + data[i].title;
 		data[i].Entity = "" + data[i].Entity;
+        console.log(data[i].Entity)
 	}//for i
 	//});
 
