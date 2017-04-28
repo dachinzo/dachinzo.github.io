@@ -9,7 +9,7 @@ function createLegend() {
 			  .attr('y', 0)  
 			  .attr('class', 'legendTitle')
 			  .style("text-anchor", "end")
-			  .text("Position in top 2000");
+			  .text("Data Sensitivtiy :");
 			  
 	var legend = legendContainer.selectAll(".legend")
 		  .data(hexLocation.map(function(d) { return d.color; }))
