@@ -45,11 +45,11 @@ if(handheld) {
 function locateY(d) {
     console.log(d.release + '-' + startYear);
     //console.log(startYear)
-	//var yearLoc = d.release - startYear;
-	//var topping = years[yearLoc].number;
-	//years[yearLoc].number += 1;
+	var yearLoc = d.release - startYear;
+	var topping = years[yearLoc].number;
+	years[yearLoc].number += 1;
 	
-	//return y(topping);	
+	return y(topping);	
 }// function locateY
 
 //Taken from https://groups.google.com/forum/#!msg/d3-js/WC_7Xi6VV50/j1HK0vIWI-EJ
