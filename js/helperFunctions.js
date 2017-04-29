@@ -33,9 +33,9 @@ var handheld = window.mobileAndTabletcheck();
 
 var fileName;	
 if(handheld) {
-	fileName = (is_IE | is_Firefox ? "top2000lijst2015_2.csv" : "top2000lijst2015_2.csv"); //IE & Firefox cannot read Unicode saved files
+	fileName = (is_IE | is_Firefox ? "top2000lijst2015.csv" : "top2000lijst2015.csv"); //IE & Firefox cannot read Unicode saved files
 } else {
-	fileName = (is_IE | is_Firefox ? "top2000lijst2015_2.csv" : "top2000lijst2015_2.csv");
+	fileName = (is_IE | is_Firefox ? "top2000lijst2015.csv" : "top2000lijst2015.csv");
 }//else
 ////////////////////////////////////////////////////////////
 ////////////////// Helper Functions ////////////////////////
