@@ -35,7 +35,7 @@ var fileName;
 if(handheld) {
 	fileName = (is_IE | is_Firefox ? "top2000lijst2015.csv" : "top2000lijst2015.csv"); //IE & Firefox cannot read Unicode saved files
 } else {
-	fileName = (is_IE | is_Firefox ? "top2000lijst2015.csv" : "top2000lijst2015.csv");
+	fileName = (is_IE | is_Firefox ? "top2000lijst2015.csv_2" : "top2000lijst2015.csv_2");
 }//else
 ////////////////////////////////////////////////////////////
 ////////////////// Helper Functions ////////////////////////
@@ -43,9 +43,9 @@ if(handheld) {
 
 //Calculate height of each rectangle
 function locateY(d) {
-    console.log(d.release + '-' + startYear);
+    console.log((d.YEAR + 2004) + '-' + startYear);
     //console.log(startYear)
-	var yearLoc = d.release - startYear;
+	var yearLoc = (d.YEAR + 2004) - startYear;
 	var topping = years[yearLoc].number;
 	years[yearLoc].number += 1;
 	
